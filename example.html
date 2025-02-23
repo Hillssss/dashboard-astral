@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Message Display</title>
+</head>
+<body>
+
+<div id="messageContainer"></div>
+
+<script>
+    // Function to receive message from parent window (mqtt-example.html)
+    function receiveMessageFromParent(topic, message) {
+        // Update content inside the iframe based on the received message
+        document.getElementById('messageContainer').innerHTML += `<p><strong>Topic:</strong> ${topic}</p><p><strong>Message:</strong> ${message}</p>`;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Mapbox Marker</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+  <link href="./dist/css/tabler.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/tabler-flags.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/tabler-payments.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/tabler-vendors.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/demo.min.css?1684106062" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="dist/css/custom.css"/>
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    
+    .mapboxgl-ctrl-bottom-left{
+            display: none;
+    }
+
+    .mapboxgl-ctrl-bottom-right{
+        display: none;
+    }
+
+    .marker {
+      background-image: url('./dist/css/mappin.png');
+      background-size: cover;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id='map'></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row p-3" style="position: absolute; z-index: 99;">
+        <div class="col-md-12">
+            <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+                <symbol xmlns="http://www.w3.org/2000/svg" id="sbx-icon-search-13" viewBox="0 0 40 40">
+                    <path d="M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z"
+                    fill-rule="evenodd" />
+                </symbol>
+                <symbol xmlns="http://www.w3.org/2000/svg" id="sbx-icon-clear-2" viewBox="0 0 20 20">
+                    <path d="M8.96 10L.52 1.562 0 1.042 1.04 0l.522.52L10 8.96 18.438.52l.52-.52L20 1.04l-.52.522L11.04 10l8.44 8.438.52.52L18.96 20l-.522-.52L10 11.04l-8.438 8.44-.52.52L0 18.96l.52-.522L8.96 10z" fill-rule="evenodd" />
+                </symbol>
+                </svg>
+                
+                <form novalidate="novalidate" onsubmit="return false;" class="searchbox sbx-custom">
+                  <div role="search" class="sbx-custom__wrapper">
+                      <input type="search" name="search" placeholder="Search ID" autocomplete="off" required="required" class="sbx-custom__input">
+                      <button type="submit" title="Submit your search query." class="sbx-custom__submit">
+                      <svg role="img" aria-label="Search">
+                          <use xlink:href="#sbx-icon-search-13"></use>
+                      </svg>
+                      </button>
+                      <button type="reset" title="Clear the search query." class="sbx-custom__reset">
+                      <svg role="img" aria-label="Reset">
+                          <use xlink:href="#sbx-icon-clear-2"></use>
+                      </svg>
+                      </button>
+                  </div>
+                </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6  p-3">
+      <div id="profile-info" class="card" style="display: none;">
+        <div class="card-body p-0 position-relative3">
+            <div class="row align-items-center">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <img id="img-profile" src="https://picsum.photos/200/300" class="rounded-circle border border-5" width="180" height="180" style="object-fit: cover;">
+                </div>
+                <div class="col-md-6" style="font-family: 'SpaceDemo';">
+                  <div class="row">
+                      <div class="col-md-12 lh-sm" style="padding-top: 10px;"> <!-- Menambahkan padding-top -->
+                          <h3 style="margin: 0px;">NRP</h3>
+                          <p class="mt-2">27082</p>
+                      </div>
+                      <div class="col-md-12 lh-sm">
+                          <h3 style="margin: 0px;">NAME</h3>
+                          <p class="mt-2">PRABOWO SUBIANTO</p>
+                      </div>
+                      <div class="col-md-12 lh-sm">
+                          <h3 style="margin: 0px;">BIRTH DATE</h3>
+                          <p class="mt-2">17 OKTOBER 1951</p>
+                      </div>
+                      <div class="col-md-12 lh-sm">
+                          <h3 style="margin: 0px;">DEVICE ID</h3>
+                          <p class="mt-2">0987654321</p>
+                      </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+<script
+			  src="https://code.jquery.com/jquery-3.7.1.min.js"
+			  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.2.7/mqtt.min.js"></script>
+		
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1IjoicnVieWdvYmF5IiwiYSI6ImNsdnVxZnl5eDFnZmUyaG5uM3U0anFsMHoifQ.jHW28t3rWtUkaHHyrFAJoA';
+
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [107.63104291534165, -6.907543396158232], // New York City
+    zoom: 9
+  });
+
+  const el = document.createElement('div');
+  el.className = 'marker';
+  
+  // Add a marker to the map
+  var marker = new mapboxgl.Marker(el)
+    .setLngLat([107.63104291534165, -6.907543396158232])
+    .addTo(map);
+  
+  marker.getElement().addEventListener('click', () => {
+    $("#profile-info").toggle(300);
+    $("#img-profile").attr("src","https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Prabowo_Subianto%2C_Candidate_for_Indonesia%27s_President_in_2024.jpg/800px-Prabowo_Subianto%2C_Candidate_for_Indonesia%27s_President_in_2024.jpg");
+  });
+
+  const brokerUrl = 'wss://nexin.id';
+      
+          const options = {
+              clientId: "myclientid_" + parseInt(Math.random() * 100, 10),
+              username: '', // If required
+              password: '', // If required
+              port: 9001, // WebSocket secure port
+              protocol: 'wss', // WebSocket secure protocol
+              rejectUnauthorized: true
+          };
+      
+          // Create an MQTT client instance
+          const client = mqtt.connect(brokerUrl, options);
+      
+          function checkMQTTConnection() {
+              if (client.connected) {
+                  console.log('Connected to MQTT broker');
+              } else {
+                  console.log('Disconnected to MQTT broker');
+              }
+          }
+      
+          // Check MQTT connection status every 5 seconds
+          setInterval(checkMQTTConnection, 5000);
+      
+          // Handle MQTT client events
+          client.on('connect', () => {
+              console.log('Connected to MQTT broker');
+              client.subscribe('/smartwatch/location');
+              client.subscribe('test123');
+              // Subscribe to topics or publish messages here
+          });
+      
+          client.on('message', (topic, message) => {
+    console.log(`Received message on topic ${topic}: ${message.toString()}`);
+    const mqttMessages = document.getElementById('mqtt-messages');
+    const locMessage = document.createElement('p');
+    if (topic === '/smartwatch/location') {
+    locMessage.textContent = `${message.toString()}`;
+    console.log(message.toString());
+    const data = JSON.parse(message.toString());
+    
+    const Compass = data.Compass;
+    const lat = data.lat;
+    const long = data.long;
+    const altitude = data.altitude;
+
+    const lngLat = [long, lat];
+
+            // Update marker position
+            marker.setLngLat(lngLat);
+    
+    console.log(Compass);
+    console.log(lat);
+    console.log(long);
+    console.log(altitude);
+    
+    // mqttMessages.appendChild(locMessage);
+    // mqttMessages.appendChild(document.createElement('br')); // Menambahkan baris kosong
+} else {
+    console.log(`Received message from unexpected topic: ${topic}`);
+    // Handle unexpected topics here, for example:
+    locMessage.textContent = `Unexpected message from topic ${topic}`;
+    locMessage.style.color = 'red'; // Highlight unexpected messages in red
+    // mqttMessages.appendChild(locMessage); // Menggunakan variabel yang benar
+    // mqttMessages.appendChild(document.createElement('br')); // Menambahkan baris kosong
+}
+});
+          client.on('error', (err) => {
+              console.log('MQTT error:', err);
+          });
+</script>
+
+</body>
+</html>

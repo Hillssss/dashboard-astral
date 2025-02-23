@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>MQTT Example</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+  <link href="./dist/css/tabler.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/tabler-flags.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/tabler-payments.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/tabler-vendors.min.css?1684106062" rel="stylesheet"/>
+  <link href="./dist/css/demo.min.css?1684106062" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="dist/css/custom.css"/>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div id="mqtt-messages"></div>
+      </div>
+      
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.2.7/mqtt.min.js"></script>
+      <script>
+          const brokerUrl = 'wss://nexin.id';
+      
+          const options = {
+              clientId: "myclientid_" + parseInt(Math.random() * 100, 10),
+              username: '', // If required
+              password: '', // If required
+              port: 9001, // WebSocket secure port
+              protocol: 'wss', // WebSocket secure protocol
+              rejectUnauthorized: true
+          };
+      
+          // Create an MQTT client instance
+          const client = mqtt.connect(brokerUrl, options);
+      
+          function checkMQTTConnection() {
+              if (client.connected) {
+                  console.log('Connected to MQTT broker');
+              } else {
+                  console.log('Disconnected to MQTT broker');
+              }
+          }
+      
+          // Check MQTT connection status every 5 seconds
+          setInterval(checkMQTTConnection, 5000);
+      
+          // Handle MQTT client events
+          client.on('connect', () => {
+              console.log('Connected to MQTT broker');
+              client.subscribe('/smartwatch/location');
+              client.subscribe('test123');
+              // Subscribe to topics or publish messages here
+          });
+      
+          client.on('message', (topic, message) => {
+    console.log(`Received message on topic ${topic}: ${message.toString()}`);
+    const mqttMessages = document.getElementById('mqtt-messages');
+    const locMessage = document.createElement('p');
+    if (topic === '/smartwatch/location') {
+    locMessage.textContent = `${message.toString()}`;
+    mqttMessages.appendChild(locMessage);
+    mqttMessages.appendChild(document.createElement('br')); // Menambahkan baris kosong
+} else {
+    console.log(`Received message from unexpected topic: ${topic}`);
+    // Handle unexpected topics here, for example:
+    locMessage.textContent = `Unexpected message from topic ${topic}`;
+    locMessage.style.color = 'red'; // Highlight unexpected messages in red
+    mqttMessages.appendChild(locMessage); // Menggunakan variabel yang benar
+    mqttMessages.appendChild(document.createElement('br')); // Menambahkan baris kosong
+}
+});
+          client.on('error', (err) => {
+              console.log('MQTT error:', err);
+          });
+      </script>
+      </body>
+      </html>
